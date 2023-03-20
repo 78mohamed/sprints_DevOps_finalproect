@@ -1,0 +1,24 @@
+pipeline {
+  agent any
+  environment {
+    KUBECONFIG = "/tmp/kubeconfig.yml"
+  }
+  stages {
+    stage('Checkout') {
+
+    stage('Deploy to EKS') {
+      steps {
+        withAWS(region: 'us-east-1', credentials: 'aws') {
+          sh 'aws eks update-kubeconfig --name my_ecr --region us-east-1'
+          sh 'kubectl apply -f ns'
+          sh 'kubectl apply -f config'
+          sh 'kubectl apply -f pv'
+          sh 'kubectl apply -f statfulset'
+          sh 'kubectl apply -f deploy'
+          sh 'kubectl apply -f services'
+          sh 'kubectl apply -f ingress'
+        }
+      }
+    }
+  }
+}
