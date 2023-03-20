@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image:
+        image: 140744541048.dkr.ecr.us-east-1.amazonaws.com/myreg:mydb
         envFrom:
           - configMapRef:
              name: db-configmap
