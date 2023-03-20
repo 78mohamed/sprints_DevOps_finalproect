@@ -1,0 +1,156 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  become_user: root
+  vars_prompt:
+
+    - name: username
+      prompt: enter your jenkins username?
+      private: false
+
+    - name: password
+      prompt: What is your jenkins password?
+      private: true
+
+  tasks:
+
+   - name: Download jenkins url
+     get_url:
+       url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+       dest: /etc/yum.repos.d/jenkins.repo
+
+
+   - name: Import jenkin's key from a url
+     rpm_key:
+       key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+
+#   - name: Upgrade all packages
+#     yum:
+#       name: '*'
+#       state: latest
+
+
+   - name: install java
+     yum:
+       name: 
+          - java-11-openjdk
+          - jenkins
+
+
+   - name: daemon-reload
+     systemd:
+       daemon_reload: true
+
+
+
+   - name: jenkins enable
+     systemd:
+       name: jenkins
+       enabled: true
+
+
+   - name: start jenkins
+     systemd:
+       name: jenkins
+       state: started
+     
+
+
+
+   - name: Download Jenkins CLI jar
+     get_url:
+       url: http://localhost:8080/jnlpJars/jenkins-cli.jar
+       dest: /home/ec2-user
+     register: cli_installed
+
+
+
+
+
+
+
+
+   - name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist
+     shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{ username }}", "{{ password }}")' |java -jar ./jenkins-cli.jar -s "http://localhost:8080" -auth admin:$(sudo cat /var/lib/jenkins/secrets/initialAdminPassword) -noKeyAuth groovy = –
+     args:
+       chdir: /home/ec2-user
+
+
+############################installing plugins##########################################
+
+
+
+
+
+   - name: install git
+     yum:
+       name:
+         - git
+       state: present
+
+
+
+
+
+
+
+
+
+
+
+
+   - name: Add extras repository
+     shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo 
+
+   - name: Install docker
+     yum:
+       name:
+         - docker-ce
+         - docker-ce-cli
+         - containerd.io
+         - docker-buildx-plugin
+         - docker-compose-plugin
+       state: present
+
+
+   - name: Add ec2-user to docker group
+     user:
+       name: ec2-user
+       groups: ["docker"]
+       append: yes
+
+
+
+
+   - name: Add jenkins to docker group
+     user:
+       name: jenkins
+       groups: ["docker"]
+       append: yes
+
+
+
+   - name: Start Docker service
+     service:
+       name: docker
+       state: started
+       enabled: true
+
+
+
+
+
+   - name: Install Python PIP
+     yum:
+       name: python-pip
+       state: present
+
+   - name: Install AWS CLI via PIP
+     pip:
+       name: awscli
+       state: present
+
+
+
+
