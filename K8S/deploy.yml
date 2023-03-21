@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: my_ns
+  namespace: myns
   name: flask-deployment
   labels:
     app: app
@@ -17,9 +17,23 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: 140744541048.dkr.ecr.us-east-1.amazonaws.com/myreg:myapp
+        image: mans8564/myapp:v1
         envFrom:
           - configMapRef:
              name: mysql-configmap
         ports:
         - containerPort: 5002
+        
+        readinessProbe:
+            initialDelaySeconds: 35
+            periodSeconds: 20
+            httpGet:
+              port: 5002
+              path: /
+
+        livenessProbe:
+            initialDelaySeconds: 35
+            periodSeconds: 20
+            httpGet:
+              port: 5002
+              path: /
