@@ -1,1 +1,1 @@
-# sprints_DevOps_finalproect
+# sprints_DevOps_finalproject
