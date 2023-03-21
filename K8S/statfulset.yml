@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
-  namespace: my_ns
+  namespace: myns
 spec:
   serviceName: "db-service"
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: 140744541048.dkr.ecr.us-east-1.amazonaws.com/myreg:mydb
+        image: mans8564/mydb:v1
         envFrom:
           - configMapRef:
              name: db-configmap
