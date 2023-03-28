@@ -9,7 +9,7 @@ pipeline {
       stage('Build docker') {
          steps {
             script {
-          sh 'docker build -t 140744541048.dkr.ecr.us-east-1.amazonaws.com/myreg:mydb .'
+          sh 'docker build -t 140744541048.dkr.ecr.us-east-1.amazonaws.com/myreg:mydb ./docker/db'
         
          }
          }
