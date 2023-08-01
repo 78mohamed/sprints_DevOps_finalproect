@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: myns
+  name: mysql-configmap
+data:
+  MYSQL_DATABASE_USER: "root"
+  MYSQL_DATABASE_PASSWORD: "root"
+  MYSQL_DATABASE_DB: "BucketList"
+  MYSQL_DATABASE_HOST: "db-service"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-configmap
+  namespace: myns
+data:
+  MYSQL_ROOT_PASSWORD: "root"

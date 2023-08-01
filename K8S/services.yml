@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+  namespace: myns
+spec:
+  selector:
+    app: mysql
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: myns
+  name: app-service
+spec:
+  selector:
+    app: app
+  ports:
+    - name: http
+      port: 5002
+      targetPort: 5002
+  type: ClusterIP
+
